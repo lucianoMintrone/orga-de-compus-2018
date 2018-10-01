@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <getopt.h>
 
-extern void qsort(char** izq, char** der, int num);
+extern void mips_qsort(char** izq, char** der, int num);
 
 void show_version() {
 	printf("1.0.0\n");
