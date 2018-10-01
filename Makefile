@@ -11,7 +11,7 @@ DEFS    = -I. -D$(SYSTYPE)
 CFLAGS  = $(DEBUG) $(OPT) $(DEFS)
 OPTS	= 'CC=$(CC)'
 #HDRS    = debug.h defs.h mygetopt.h param.h
-SRCS	= main.c
+SRCS	= main.c qsort.S
 PROG	= tp1
 
 $(PROG): $(SRCS) $(HDRS)
