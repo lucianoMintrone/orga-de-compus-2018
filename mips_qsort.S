@@ -20,7 +20,7 @@
     .ent mips_qsort
 
 
-qsort:
+mips_qsort:
     
     #creo StackFrame
 
@@ -37,33 +37,6 @@ qsort:
     
     sw $fp, FP(sp) 
     sw gp, GP(sp)  
-    
-    #move $fp, sp 
-
-    sw a0, NUM_CALLER(sp)
-    sw a1, DER_CALLER(sp)
-    sw a2, IZQ_CALLER(sp) 
-    
-    # Seed
-    l.s $f0, SEED_REAL_PARAM(a0) 
-    s.s $f0, SEED_REAL($fp) 
-
-    l.s $f0, SEED_IM_PARAM(a0) 
-    s.s $f0, SEED_IM($fp)
-
-    # Variables locales
-    li t0, 0       
-    sw t0, C($fp)   
-    sw t0, X($fp) 
-    sw t0, Y($fp)  
-    sw t0, SI($fp) 
-    sw t0, SR($fp) 
-    sw t0, ZI($fp) 
-    sw t0, ZR($fp) 
-    
-    # Buffer Len
-    li t0, 0
-    sw t0, BUFFER_LEN($fp)
 
     # Fin StackFrame
 
@@ -90,7 +63,7 @@ return:
 
     jr ra
     
-    .end qsort
+    .end mips_qsort
 
     .data
 header: 
