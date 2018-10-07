@@ -12,7 +12,7 @@ CFLAGS  = $(DEBUG) $(OPT) $(DEFS)
 OPTS	= 'CC=$(CC)'
 #HDRS    = debug.h defs.h mygetopt.h param.h
 SRCS	= main.c mips_qsort.S
-PROG	= tp1
+PROG	= qsort
 
 $(PROG): $(SRCS) $(HDRS)
 	$(CC) $(CFLAGS) -o $@ $(SRCS) $(SYSLIBS)
