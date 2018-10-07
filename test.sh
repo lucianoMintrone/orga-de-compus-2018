@@ -5,7 +5,6 @@ make
 OK_COUNTER=0
 FAIL_COUNTER=0
 
-
 function validation {
   if [[ -z $1 ]]; then
     echo "  Test OK"

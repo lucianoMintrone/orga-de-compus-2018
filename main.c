@@ -3,8 +3,13 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <getopt.h>
+#include <string.h>
 
-extern void mips_qsort(char** izq, char** der, int num);
+#define MIN_LINES 128
+#define MIN_LINE_LEN 100
+
+void c_qsort(char** izq, char** der, int num);
+
 
 void show_version() {
 	printf("1.0.0\n");
@@ -15,7 +20,7 @@ void show_help() {
 		"   qsort -h\n"
 		"   qsort -V\n"
 		"   qsort [options] archivo\n"
-		"Options:\n"  
+		"Options:\n"
 	 	"   -h, --help Imprime ayuda.\n"
 		"   -V, --version Version del programa.\n"
 		"   -o, --output Archivo de salida.\n"
@@ -25,23 +30,67 @@ void show_help() {
 	);
 }
 
-void sort(char* input_file, char* output_file) {
-	FILE* input;
-	FILE* output;
-	if (!input_file && !output_file) {
-		input = stdin;
-		output = stdout;
-	} else {
-		input = fopen(input_file, "r");
-		output = fopen(output_file, "w");
+void parse_file(char *filename) {
+	int lines_allocated = MIN_LINES;
+	int max_line_len = MIN_LINE_LEN;
+
+	/* Allocate lines of text */
+	char **words = (char **)malloc(sizeof(char*)*lines_allocated);
+	if (words==NULL) {
+		fprintf(stderr,"Out of memory (1).\n");
+		exit(1);
 	}
-	if (!input || !output) return;
-	
-	size_t read_size;
-	
-	
-	fclose(input);
-	fclose(output);
+
+	FILE *fp = fopen(filename, "r");
+	if (fp == NULL) {
+		fprintf(stderr,"Error opening file.\n");
+		exit(2);
+	}
+
+	int i;
+	for (i=0;1;i++) {
+		int j;
+
+		/* Have we gone over our line allocation? */
+		if (i >= lines_allocated) {
+			int new_size;
+
+			/* Double our allocation and re-allocate */
+			new_size = lines_allocated*2;
+			words = (char **)realloc(words,sizeof(char*)*new_size);
+			if (words==NULL) {
+				fprintf(stderr,"Out of memory.\n");
+				exit(3);
+			}
+			lines_allocated = new_size;
+		}
+		/* Allocate space for the next line */
+		words[i] = malloc(max_line_len);
+		if (words[i]==NULL) {
+			fprintf(stderr,"Out of memory (3).\n");
+			exit(4);
+		}
+		if (fgets(words[i],max_line_len-1,fp)==NULL)
+			break;
+
+		/* Get rid of CR or LF at end of line */
+		for (j=strlen(words[i])-1;j>=0 && (words[i][j]=='\n' || words[i][j]=='\r');j--);
+		words[i][j+1]='\0';
+	}
+	/* Close file */
+	fclose(fp);
+	c_qsort(words, words + i - 1, 12);
+	size_t asd;
+
+	for (asd = 0; asd < i; asd++) {
+		printf("%s\n", words[asd]);
+	}
+
+	/* Good practice to free memory */
+	for (;i>=0;i--)
+			free(words[i]);
+	free(words);
+
 }
 
 int main (int argc, char *argv[]) {
@@ -81,7 +130,7 @@ int main (int argc, char *argv[]) {
 	} else if (version) {
 		show_version();
 	} else {
-		sort(input_file, output_file);		
+		parse_file("test.txt");
 	}
 	return EXIT_SUCCESS;
 }
