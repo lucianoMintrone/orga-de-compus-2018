@@ -21,6 +21,9 @@
 
 
 mips_qsort:
+    .set noreorder
+    .cpload t9
+    .set reorder
     #creo StackFrame
     #       | padding |
     #       |   ra    |
@@ -47,23 +50,23 @@ mips_qsort:
 if_izq_der: #if(first<last)
     subu t2, t0, t1 #PDER - PIZQ
     blez t2, success #branch if PDER - PIZQ <= 0 //=> if PDER <= PIZQ
-    addiu t2, t1, 0 #t2 = PIVOT = PIZQ
+    addiu t2, t1, 0 #t2 = PPIVOT = PIZQ
     addiu t3, t1, 0 #t3 = PI = PIZQ
     addiu t4, t0, 0 #t4 = PJ = PDER
-while:
+while: #while(PI < PJ)
     subu t5, t4, t3 #PJ - PI
     blez t5, end_while #branch if PJ - PI <= 0 //=> if PJ <= PI
-while_i:
+while_i: #while(I <= PIVOT and PI < PDER)
     lbu t6, 0(t3) #t6 = I
     lbu t7, 0(t2) #t7 = PIVOT
-    subu t0, t7, t6 #PIVOT - I
-    bltz t0, while_j #branch if PIVOT - I < 0 //=> if PIVOT < I
+    subu t5, t7, t6 #PIVOT - I
+    bltz t5, while_j #branch if PIVOT - I < 0 //=> if PIVOT < I
     subu t5, t0, t3 #PDER - PI
     blez t5, while_j #branch if PDER - PI <= 0 //=> if PDER <= PI
     addiu t3, t3, 4 #i++ // PI + 4
     j while_i
 
-while_j:
+while_j: #while(J > PIVOT)
     lbu t6, 0(t4) #t6 = J
     subu t5, t6, t7 #J - PIVOT
     blez t5, if_i_j #branch if J - PIVOT <= 0 //=> if J <= PIVOT
@@ -73,17 +76,25 @@ while_j:
 if_i_j: #if(i<j)
     subu t5, t4, t3 #PJ - PI
     blez t5, while #branch if PJ - PI <= 0 //=> if PJ <= PI
-    # temp=number[i];
-    # number[i]=number[j];
-    # number[j]=temp;
+    lbu t6, 0(t3) #t6 = temp = I
+    lbu t7, 0(t4) #t7 = J
+    sb t7, 0(t3) #list[I] = list[J]
+    sb t6, 0(t4) #list[J] = list[I] 
+    j if_izq_der
 
 end_while:
-    # temp=number[pivot];
-    # number[pivot]=number[j];
-    # number[j]=temp;
-    # quicksort(number,first,j-1);
-    # quicksort(number,j+1,last);
-
+    lb t7, 0(t2) #t7 = PIVOT
+    lb t6, 0(t4) #t6 = J
+    sb t6, 0(t2) #list[PIVOT] = list[J]
+    sb t7, 0(t4) #list[J] = list[PIVOT]
+    addi a0, zero, 0
+                #a2 = PI
+    subu a1, t4, 4 #PJ -= 4 // PDER = PJ - 4
+    jal mips_qsort #quicksort(num,PJ-1,PI)
+    addu a2, t4, 4 #PJ += 4 // PDER = PJ + 4
+                #a1 = PDER
+    jal mips_qsort #quicksort(num,PDER,PJ + 1)
+    addi a0, zero, 0
 
 io_error:
     li v0, SYS_write
@@ -112,6 +123,7 @@ return:
     .end mips_qsort
 
     .data
+list: .byte 5, 2, 1, 0, 4, 3
 header: 
   .asciiz "P2\n"
 line_break:
