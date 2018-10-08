@@ -22,7 +22,7 @@ RESULT=$(diff tests/aux/test1out.txt tests/test1result.txt)
 validation $RESULT
 
 echo "Order number with many digits and send to stdout"
-./qsort -n -o - -i tests/test2.txt > tests/aux/test2out.txt
+./qsort -o - -i tests/test2.txt > tests/aux/test2out.txt
 RESULT=$(diff tests/aux/test2out.txt tests/test2result.txt)
 validation $RESULT
 

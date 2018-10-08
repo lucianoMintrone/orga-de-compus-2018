@@ -113,7 +113,7 @@ int main (int argc, char *argv[]) {
 		{"input", required_argument, 0, 'i'}
 	};
 
-	while ((flag = getopt_long(argc, argv, "Vho:i:d", opts, NULL)) != -1) {
+	while ((flag = getopt_long(argc, argv, "Vhno:i:d", opts, NULL)) != -1) {
 		switch (flag) {
 			case 'V' :
 				version = true;
@@ -134,10 +134,13 @@ int main (int argc, char *argv[]) {
 				input = true;
 				break;
 			case 'n' :
-				numeric = true
+				numeric = true;
 				break;
 		}
 	}
+
+	// Esto est'a dado vuelta porque soy medio boludo
+	numeric = false;
 
 	if (help) {
 		show_help();
