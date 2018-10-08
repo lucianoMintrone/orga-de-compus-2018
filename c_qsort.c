@@ -3,7 +3,7 @@
 #include <string.h>
 
 int minus(char *a, char *b, int num) {
-  if (num) {
+  if (num == 0) {
     return atoi(a) - atoi(b);
   } else {
     return strcmp(a, b);
@@ -11,9 +11,7 @@ int minus(char *a, char *b, int num) {
 }
 
 void c_qsort(char** izq, char** der, int num) {
-  char ** i = NULL;
-  char ** j = NULL;
-  char ** pivot = NULL;
+  char **i, **j, **pivot = NULL;
   char * temp = NULL;
 
   if(izq < der){

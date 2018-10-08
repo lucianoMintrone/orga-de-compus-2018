@@ -8,8 +8,8 @@
 #define MIN_LINES 128
 #define MIN_LINE_LEN 100
 
-void c_qsort(char** izq, char** der, int num);
-
+void c_qsort(char **izq, char **der, int num);
+void mips_qsort(char **izq, char **der, int num);
 
 void show_version() {
 	printf("1.0.0\n");
@@ -24,13 +24,21 @@ void show_help() {
 	 	"   -h, --help Imprime ayuda.\n"
 		"   -V, --version Version del programa.\n"
 		"   -o, --output Archivo de salida.\n"
+		"   -i, --input Archivo de entrada.\n"
 		"   -n, --numeric Ordenar los datos numericamente en vez de alfabeticamente.\n"
 		"Examples:\n"
 		"   qsort -n numeros.txt\n"
 	);
 }
 
-void parse_file(char *filename) {
+void print_result(char **result, int len, FILE *output_file) {
+	size_t i;
+	for (i = 0; i < len; i++) {
+			fprintf(output_file, "%s\n", result[i]);
+	}
+}
+
+void parse_file_sort_and_print(FILE *input_file, FILE *output_file, int num) {
 	int lines_allocated = MIN_LINES;
 	int max_line_len = MIN_LINE_LEN;
 
@@ -41,7 +49,7 @@ void parse_file(char *filename) {
 		exit(1);
 	}
 
-	FILE *fp = fopen(filename, "r");
+	FILE *fp = input_file;
 	if (fp == NULL) {
 		fprintf(stderr,"Error opening file.\n");
 		exit(2);
@@ -77,31 +85,30 @@ void parse_file(char *filename) {
 		for (j=strlen(words[i])-1;j>=0 && (words[i][j]=='\n' || words[i][j]=='\r');j--);
 		words[i][j+1]='\0';
 	}
-	/* Close file */
+	// Close file
 	fclose(fp);
-	c_qsort(words, words + i - 1, 12);
-	size_t asd;
 
-	for (asd = 0; asd < i; asd++) {
-		printf("%s\n", words[asd]);
-	}
+	c_qsort(words, words + i - 1, num);
+	print_result(words, i, output_file);
 
-	/* Good practice to free memory */
+	// Free
 	for (;i>=0;i--)
 			free(words[i]);
 	free(words);
-
 }
 
 int main (int argc, char *argv[]) {
-	bool help, version, output, input;
+	bool help, version, output, input, numeric;
 	help = version = output = input = false;
-	char *output_file, *input_file;
+
+	FILE *output_file, *input_file;
 	output_file = input_file = NULL;
+
 	int flag = 0;
 	struct option opts[] = {
 		{"version", no_argument, 0, 'V'},
 		{"help", no_argument, 0, 'h'},
+		{"numeric", no_argument, 0, 'n'},
 		{"output", required_argument, 0, 'o'},
 		{"input", required_argument, 0, 'i'}
 	};
@@ -115,12 +122,19 @@ int main (int argc, char *argv[]) {
 				help = true;
 				break;
 			case 'o' :
-				output_file = optarg;
+				if (!strcmp(optarg, "-")) {
+					output_file = stdout;
+				} else {
+					output_file = fopen(optarg, "w");
+				}
 				output = true;
 				break;
 			case 'i' :
-				input_file = optarg;
+				input_file = fopen(optarg, "r");
 				input = true;
+				break;
+			case 'n' :
+				numeric = true
 				break;
 		}
 	}
@@ -130,7 +144,11 @@ int main (int argc, char *argv[]) {
 	} else if (version) {
 		show_version();
 	} else {
-		parse_file("test.txt");
+		parse_file_sort_and_print(input_file, output_file, numeric);
 	}
+
+	// fclose(input_file);
+	// fclose(output_file);
+
 	return EXIT_SUCCESS;
 }
