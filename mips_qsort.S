@@ -46,8 +46,8 @@ mips_qsort:
     sw $fp, FP(sp) 
     sw gp, GP(sp)  
     # Fin StackFrame 
+    #a0 = Puntero a Izq, primero, PIZQ (**IZQ)
     #a1 = Puntero a Der, ultimo, PDER (**DER)
-    #a2 = Puntero a Izq, primero, PIZQ (**IZQ)
     #t0 = PPIVOT (**PIVOT)
     #t1 = PI (**I)
     #t2 = PJ (**J)
@@ -62,7 +62,6 @@ mips_qsort:
     #v1 en atoi vuelve a primer numero o segundo
     #s4 while_i / while_j
 
-    addiu a2, zero, 1
     sw a2, NUM_CALLER(sp) #Guardo los parametros en el ABA del caller// num == 0 -> string
     sw a1, DER_CALLER(sp) #a1 = Puntero a String Der, ultimo string (**DER)
     sw a0, IZQ_CALLER(sp) #a0 = Puntero a String Izq, primer string (**IZQ)
@@ -124,7 +123,7 @@ end_while:
 
 
 compare:
-    beqz a0, string_compare
+    beqz a2, string_compare
     j number_compare
 end_compare:
     beqz s4, n_compare_while_i
@@ -132,23 +131,23 @@ end_compare:
 
 
 string_compare: #t4 < t3 => t5 = -1 
-    lw t9, 0(t3) #t9 = Puntero al primer valor a comparar (*i)
-    lw t8, 0(t4) #t8 = Puntero al segundo valor a comparar (*i)
+    lw t9, 0(t3) #t9 = Puntero al primer valor a comparar (*I)
+    lw t8, 0(t4) #t8 = Puntero al segundo valor a comparar (*PIVOT)
 while_string_compare:
-    lbu t7, 0(t9) #t7 = letra de t3
-    lbu t6, 0(t8) #t6 = letra de t4  
-    beqz t7, second_is_less #letra del segundo es zero entonces es menor
-    beqz t6, first_is_less #letra del primero es zero entonces es menor
-    subu t5, t6, t7 #resta segunda letra - primera letra   
-    addiu t7, t7, 1
-    addiu t6, t6, 1
+    lbu t7, 0(t9) #t7 = letra de t3 (**I) a
+    lbu t6, 0(t8) #t6 = letra de t4  (**PIVOT) aa
+    beqz t7, t7_is_less #letra de t7 es zero entonces es menor
+    beqz t6, t6_is_less #letra de t6 es zero entonces es menor
+    subu t5, t6, t7 #resta letra de PIVOT - letra de I 
+    addiu t8, t8, 1
+    addiu t9, t9, 1
     beqz t5, while_string_compare
-    bgtz t5, first_is_less
-    j second_is_less
-first_is_less:
+    bgtz t5, t7_is_less
+    j t6_is_less
+t6_is_less:
     addiu t5, zero, 1
     j end_compare
-second_is_less:
+t7_is_less:
     addi t5, zero, -1
     j end_compare
 
