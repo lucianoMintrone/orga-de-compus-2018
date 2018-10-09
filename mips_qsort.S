@@ -140,8 +140,8 @@ while_string_compare:
     beqz t7, second_is_less #letra del segundo es zero entonces es menor
     beqz t6, first_is_less #letra del primero es zero entonces es menor
     subu t5, t6, t7 #resta segunda letra - primera letra   
-    addiu t7, t7, 4
-    addiu t6, t6, 4
+    addiu t7, t7, 1
+    addiu t6, t6, 1
     beqz t5, while_string_compare
     bgtz t5, first_is_less
     j second_is_less
@@ -178,7 +178,7 @@ while_atoi:
     mflo t5
     subu t9, t9, 48 #t3 = t3 - 48
     addu t5, t5, t9
-    addiu t8, t8, 4
+    addiu t8, t8, 1
     j while_atoi
 end_atoi:
     addiu v0, t5, 0
