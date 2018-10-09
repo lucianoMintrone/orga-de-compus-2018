@@ -131,14 +131,16 @@ end_compare:
 
 
 string_compare: #t4 < t3 => t5 = -1 
-    lw t9, 0(t3) #t9 = Puntero al primer valor a comparar (*I)
-    lw t8, 0(t4) #t8 = Puntero al segundo valor a comparar (*PIVOT)
+    lw t9, 0(t4) #t9 = Puntero al primer valor a comparar (*PIVOT)
+    lw t8, 0(t3) #t8 = Puntero al segundo valor a comparar (*I)
 while_string_compare:
-    lbu t7, 0(t9) #t7 = letra de t3 (**I) a
-    lbu t6, 0(t8) #t6 = letra de t4  (**PIVOT) aa
-    beqz t7, t7_is_less #letra de t7 es zero entonces es menor
+    lbu t7, 0(t9) #t7 = letra de t3 (**PIVOT) aa
+    lbu t6, 0(t8) #t6 = letra de t4  (**I) aa
+    subu t5, t6, t7 #resta letra de I (t4) - letra de PIVOT (t3)
+    add s1, t6, t7 #sumo las dos letras
+    beqz s1, equals
     beqz t6, t6_is_less #letra de t6 es zero entonces es menor
-    subu t5, t6, t7 #resta letra de PIVOT - letra de I 
+    beqz t7, t7_is_less #letra de t7 es zero entonces es menor
     addiu t8, t8, 1
     addiu t9, t9, 1
     beqz t5, while_string_compare
@@ -148,7 +150,9 @@ t6_is_less:
     addiu t5, zero, 1
     j end_compare
 t7_is_less:
-    addi t5, zero, -1
+    sub t5, zero, 1
+    j end_compare
+equals:
     j end_compare
 
 
