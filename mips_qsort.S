@@ -60,7 +60,7 @@ mips_qsort:
     #t9 atoi
     #v0 return atoi
     #v1 en atoi vuelve a primer numero o segundo
-    #v2 while_i / while_j
+    #s4 while_i / while_j
 
     addiu a2, zero, 1
     sw a2, NUM_CALLER(sp) #Guardo los parametros en el ABA del caller// num == 0 -> string
@@ -79,7 +79,7 @@ while: #while(PI < PJ)
 while_i: #while(I <= PIVOT and PI < PDER)
     addi t3, t0, 0 #t3 = PI (**i)
     addi t4, t1, 0 #t4 = PPIVOT (**PIVOT)
-    addiu v2, zero, 0 #v2 = 0 volver a n_compare_while_i
+    addiu s4, zero, 0 #s4 = 0 volver a n_compare_while_i
     j compare # PIVOT - I
 n_compare_while_i:
     bltz t5, while_j #branch if PIVOT - I < 0 //=> if PIVOT < I
@@ -91,7 +91,7 @@ n_compare_while_i:
 while_j: #while(J > PIVOT)
     addi t3, t0, 0 #t3 = PPIVOT
     addi t4, t2, 0 #t4 = PJ
-    addiu v2, zero, 1 #v2 = 1 volver a n_compare_while_j
+    addiu s4, zero, 1 #s4 = 1 volver a n_compare_while_j
     j compare # J - PIVOT
 n_compare_while_j:
     blez t5, if_i_j #branch if J - PIVOT <= 0 //=> if J <= PIVOT
@@ -127,7 +127,7 @@ compare:
     beqz a0, string_compare
     j number_compare
 end_compare:
-    beqz v2, n_compare_while_i
+    beqz s4, n_compare_while_i
     j n_compare_while_j
 
 
@@ -173,11 +173,13 @@ atoi: #
 while_atoi:
     lbu t9, 0(t8) #t9 = Primer numero
     beqz t9, end_atoi
-    mult t5, t5, 10 #t5 = t5 * 10
+    addiu s0, zero, 10
+    mult t5, s0 #t5 = t5 * 10
+    mflo t5
     subi t9, t9, 48 #t3 = t3 - 48
     addu t5, t5, t9
     addiu t8, t8, 4
-    j while_atoi_i
+    j while_atoi
 end_atoi:
     addiu v0, t5, 0
     beqz v1, first_compare
