@@ -176,7 +176,7 @@ while_atoi:
     addiu s0, zero, 10
     mult t5, s0 #t5 = t5 * 10
     mflo t5
-    subi t9, t9, 48 #t3 = t3 - 48
+    subu t9, t9, 48 #t3 = t3 - 48
     addu t5, t5, t9
     addiu t8, t8, 4
     j while_atoi
