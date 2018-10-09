@@ -49,8 +49,8 @@ mips_qsort:
     #a1 = Puntero a Der, ultimo, PDER (**DER)
     #a2 = Puntero a Izq, primero, PIZQ (**IZQ)
     #t0 = PPIVOT (**PIVOT)
-    #t1 = PI (**i)
-    #t2 = PJ (**j)
+    #t1 = PI (**I)
+    #t2 = PJ (**J)
     #t3 = Puntero: Primer valor para comparar
     #t4 = Puntero: Segundo valor para comparar
     #t5 comparaciones
@@ -77,15 +77,15 @@ while: #while(PI < PJ)
     subu t5, t2, t1 #PJ - PI
     blez t5, end_while #branch if PJ - PI <= 0 //=> if PJ <= PI
 while_i: #while(I <= PIVOT and PI < PDER)
-    addi t3, t0, 0 #t3 = PI (**I)
-    addi t4, t1, 0 #t4 = PPIVOT (**PIVOT)
+    addi t3, t1, 0 #t3 = PI (**I)
+    addi t4, t0, 0 #t4 = PPIVOT (**PIVOT)
     addiu s4, zero, 0 #s4 = 0 volver a n_compare_while_i
     j compare # PIVOT - I
 n_compare_while_i:
     bltz t5, while_j #branch if PIVOT - I < 0 //=> if PIVOT < I
     subu t5, a1, t1 #PDER - PI
     blez t5, while_j #branch if PDER - PI <= 0 //=> if PDER <= PI
-    addiu t1, t1, 4 #i++ // PI + 4
+    addiu t1, t1, 4 #I++ // PI + 4
     j while_i
 
 while_j: #while(J > PIVOT)
@@ -155,16 +155,16 @@ second_is_less:
 
 number_compare:
     addiu v1, zero, 0
-    lw t8, 0(t3) #t8 = Puntero al primer valor a comparar (*i)
+    lw t8, 0(t3) #t8 = Puntero al primer valor a comparar (*I)
     j atoi
 first_compare:
-    addiu t6, v0, 0 #numero de t3
-    lw t8, 0(t4) #t8 = Puntero al segundo valor a comparar (*i)
+    addiu t6, v0, 0 #numero de t3 (I)
+    lw t8, 0(t4) #t8 = Puntero al segundo valor a comparar (*PIVOT)
     addiu v1, zero, 1
     j atoi
 second_comapre:
-    addi t7, v0, 0 #numero de t4
-    subu t5, t7, t6 #numero de t4 - numero de t3
+    addi t7, v0, 0 #numero de t4 (PIVOT)
+    subu t5, t7, t6 #numero de t4 (PIVOT) - numero de t3 (I)
     j end_compare
 
 
