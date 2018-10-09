@@ -64,20 +64,20 @@ mips_qsort:
 
     addiu a2, zero, 1
     sw a2, NUM_CALLER(sp) #Guardo los parametros en el ABA del caller// num == 0 -> string
-    sw a1, DER_CALLER(sp) #a1 = Puntero a String Der, ultimo string 
-    sw a0, IZQ_CALLER(sp) #a0 = Puntero a String Izq, primer string
+    sw a1, DER_CALLER(sp) #a1 = Puntero a String Der, ultimo string (**DER)
+    sw a0, IZQ_CALLER(sp) #a0 = Puntero a String Izq, primer string (**IZQ)
 
 if_izq_der: #if(first<last)
     subu t5, a1, a0 #PDER - PIZQ
     blez t5, return #branch if PDER - PIZQ <= 0 //=> if PDER <= PIZQ
-    addiu t0, zero, a0 #t0 = PPIVOT = PIZQ (**PIVOT)
-    addiu t1, zero, a0 #t1 = PI = PIZQ // PI es el puntero al String I (**I)
-    addiu t2, zero, a1 #t2 = PJ = PDER // PJ es el puntero al String J (**J)
+    addu t0, zero, a0 #t0 = PPIVOT = PIZQ (**PIVOT)
+    addu t1, zero, a0 #t1 = PI = PIZQ // PI es el puntero al String I (**I)
+    addu t2, zero, a1 #t2 = PJ = PDER // PJ es el puntero al String J (**J)
 while: #while(PI < PJ)
     subu t5, t2, t1 #PJ - PI
     blez t5, end_while #branch if PJ - PI <= 0 //=> if PJ <= PI
 while_i: #while(I <= PIVOT and PI < PDER)
-    addi t3, t0, 0 #t3 = PI (**i)
+    addi t3, t0, 0 #t3 = PI (**I)
     addi t4, t1, 0 #t4 = PPIVOT (**PIVOT)
     addiu s4, zero, 0 #s4 = 0 volver a n_compare_while_i
     j compare # PIVOT - I
@@ -99,7 +99,7 @@ n_compare_while_j:
     j while_j
 
 if_i_j: #if(i<j) 
-    subu t5, t2, t1 #PJ(**j) - PI(**i)
+    subu t5, t2, t1 #PJ(**J) - PI(**I)
     blez t5, while #branch if PJ - PI <= 0 //=> if PJ <= PI
     lw t6, 0(t1) #t = *i // t6 = *i
     lw t7, 0(t2) #t7 = *j
@@ -109,8 +109,8 @@ if_i_j: #if(i<j)
 
 end_while:
     lw t7, 0(t0) #t7 = *PIVOT
-    lw t6, 0(t2) #t6 = *j
-    sw t6, 0(t0) #*PIVOT = *j
+    lw t6, 0(t2) #t6 = *J
+    sw t6, 0(t0) #*PIVOT = *J
     sw t7, 0(t2) #*j = *PIVOT
     sw t2, LTA_PJ(sp) #Guardo PJ en LTA para que lo use la segunda func recur
                 #a0 = PI
