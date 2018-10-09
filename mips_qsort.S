@@ -70,9 +70,9 @@ mips_qsort:
 if_izq_der: #if(first<last)
     subu t5, a1, a0 #PDER - PIZQ
     blez t5, return #branch if PDER - PIZQ <= 0 //=> if PDER <= PIZQ
-    lw t0, 0(a0) #t0 = PPIVOT = PIZQ
-    lw t1, 0(a0) #t1 = PI = PIZQ // PI es el puntero al String I
-    lw t2, 0(a1) #t2 = PJ = PDER // PJ es el puntero al String J
+    addiu t0, zero, a0 #t0 = PPIVOT = PIZQ (**PIVOT)
+    addiu t1, zero, a0 #t1 = PI = PIZQ // PI es el puntero al String I (**I)
+    addiu t2, zero, a1 #t2 = PJ = PDER // PJ es el puntero al String J (**J)
 while: #while(PI < PJ)
     subu t5, t2, t1 #PJ - PI
     blez t5, end_while #branch if PJ - PI <= 0 //=> if PJ <= PI
