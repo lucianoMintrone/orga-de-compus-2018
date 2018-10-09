@@ -6,7 +6,7 @@
 #include <string.h>
 
 #define MIN_LINES 128
-#define MIN_LINE_LEN 100
+#define MIN_LINE_LEN 300
 
 void c_qsort(char **izq, char **der, int num);
 void mips_qsort(char **izq, char **der, int num);
