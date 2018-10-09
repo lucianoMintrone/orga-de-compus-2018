@@ -137,8 +137,8 @@ while_string_compare:
     lbu t7, 0(t9) #t7 = letra de t3 (**PIVOT) aa
     lbu t6, 0(t8) #t6 = letra de t4  (**I) aa
     subu t5, t6, t7 #resta letra de I (t4) - letra de PIVOT (t3)
-    add s1, t6, t7 #sumo las dos letras
-    beqz s1, equals
+    add v1, t6, t7 #sumo las dos letras
+    beqz v1, equals
     beqz t6, t6_is_less #letra de t6 es zero entonces es menor
     beqz t7, t7_is_less #letra de t7 es zero entonces es menor
     addiu t8, t8, 1
