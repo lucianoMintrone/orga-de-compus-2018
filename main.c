@@ -88,7 +88,7 @@ void parse_file_sort_and_print(FILE *input_file, FILE *output_file, int num) {
 	// Close file
 	fclose(fp);
 
-	c_qsort(words, words + i - 1, num);
+	mips_qsort(words, words + i - 1, num);
 	print_result(words, i, output_file);
 
 	// Free
@@ -140,7 +140,7 @@ int main (int argc, char *argv[]) {
 	}
 
 	// Esto est'a dado vuelta porque soy medio boludo
-	numeric = false;
+	numeric = true;
 
 	if (help) {
 		show_help();

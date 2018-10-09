@@ -10,8 +10,8 @@ SHELL	= /bin/sh
 DEFS    = -I. -D$(SYSTYPE)
 CFLAGS  = $(DEBUG) $(OPT) $(DEFS)
 OPTS	= 'CC=$(CC)'
-# SRCS	= main.c mips_qsort.S
-SRCS = main.c c_qsort.c
+SRCS	= main.c mips_qsort.S
+# SRCS = main.c c_qsort.c
 PROG	= qsort
 
 $(PROG): $(SRCS) $(HDRS)
