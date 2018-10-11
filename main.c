@@ -55,7 +55,7 @@ void parse_file_sort_and_print(FILE *input_file, FILE *output_file, int num) {
 	}
 
 	int i;
-	for (i=0;1;i++) {
+	for (i = 0 ; 1 ; i++) {
 		int j;
 
 		if (i >= lines_allocated) {
@@ -63,28 +63,27 @@ void parse_file_sort_and_print(FILE *input_file, FILE *output_file, int num) {
 
 			new_size = lines_allocated*2;
 			words = (char **)realloc(words,sizeof(char*)*new_size);
-			if (words==NULL) {
+			if (words == NULL) {
 				fprintf(stderr,"Out of memory.\n");
 				exit(3);
 			}
 			lines_allocated = new_size;
 		}
 		words[i] = malloc(max_line_len);
-		if (words[i]==NULL) {
+		if (words[i] == NULL) {
 			fprintf(stderr,"Out of memory (3).\n");
 			exit(4);
 		}
-		if (fgets(words[i],max_line_len-1,fp)==NULL)
+		if (fgets(words[i], max_line_len-1, fp) == NULL)
 			break;
-
-		for (j=strlen(words[i])-1;j>=0 && (words[i][j]=='\n' || words[i][j]=='\r');j--);
-		words[i][j+1]='\0';
+		for (j=strlen(words[i]) - 1 ; j >= 0 && (words[i][j] == '\n' || words[i][j] == '\r') ; j--);
+		words[i][j + 1] = '\0';
 	}
 
 	fclose(fp);
 
-	// mips_qsort(words, words + i - 1, num);
-	c_qsort(words, words + i - 1, num);
+	mips_qsort(words, words + i - 1, num);
+	// c_qsort(words, words + i - 1, num);
 	print_result(words, i, output_file);
 
 	for (;i>=0;i--)

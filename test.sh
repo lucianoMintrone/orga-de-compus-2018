@@ -16,6 +16,7 @@ function validation {
   fi
 }
 
+# Tests propios
 echo "Order number and send to stdout"
 ./qsort -n -o - -i tests/test1.txt > tests/aux/test1_out.txt
 RESULT=$(diff tests/aux/test1_out.txt tests/test1_result.txt)
@@ -31,9 +32,8 @@ echo "Empty file test"
 RESULT=$(diff tests/aux/empty_out.txt tests/empty_result.txt)
 validation $RESULT
 
-
+# Tests dados por la cátedra
 echo "Extern tests begin"
-
 echo "Alice test"
 ./qsort -o - -i tests/alice.txt > tests/aux/alice_out.txt
 RESULT=$(diff tests/aux/alice_out.txt tests/alice_result.txt)
@@ -58,7 +58,6 @@ echo "Zeta test"
 ./qsort -o - -i tests/zeta.txt > tests/aux/zeta_out.txt
 RESULT=$(diff tests/aux/zeta_out.txt tests/zeta_result.txt)
 validation $RESULT
-
 
 echo "Test Summary"
 echo "  $OK_COUNTER Test OK"
