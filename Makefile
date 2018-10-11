@@ -36,3 +36,4 @@ clean:
 	rm -f bin/[!CRS]* lib/[!CRS]* include/[!CRS]* libexec/[!CRS]*     \
 	      junk *core .nfs* .pure *.out *.out.* *.tmp *.a *~ *- *.orig \
 *.t *.o *.bak make.err *.gmon $(PROG)
+
