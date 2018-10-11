@@ -42,7 +42,6 @@ void parse_file_sort_and_print(FILE *input_file, FILE *output_file, int num) {
 	int lines_allocated = MIN_LINES;
 	int max_line_len = MIN_LINE_LEN;
 
-	/* Allocate lines of text */
 	char **words = (char **)malloc(sizeof(char*)*lines_allocated);
 	if (words==NULL) {
 		fprintf(stderr,"Out of memory (1).\n");
@@ -59,11 +58,9 @@ void parse_file_sort_and_print(FILE *input_file, FILE *output_file, int num) {
 	for (i=0;1;i++) {
 		int j;
 
-		/* Have we gone over our line allocation? */
 		if (i >= lines_allocated) {
 			int new_size;
 
-			/* Double our allocation and re-allocate */
 			new_size = lines_allocated*2;
 			words = (char **)realloc(words,sizeof(char*)*new_size);
 			if (words==NULL) {
@@ -72,7 +69,6 @@ void parse_file_sort_and_print(FILE *input_file, FILE *output_file, int num) {
 			}
 			lines_allocated = new_size;
 		}
-		/* Allocate space for the next line */
 		words[i] = malloc(max_line_len);
 		if (words[i]==NULL) {
 			fprintf(stderr,"Out of memory (3).\n");
@@ -81,17 +77,16 @@ void parse_file_sort_and_print(FILE *input_file, FILE *output_file, int num) {
 		if (fgets(words[i],max_line_len-1,fp)==NULL)
 			break;
 
-		/* Get rid of CR or LF at end of line */
 		for (j=strlen(words[i])-1;j>=0 && (words[i][j]=='\n' || words[i][j]=='\r');j--);
 		words[i][j+1]='\0';
 	}
-	// Close file
+
 	fclose(fp);
 
-	mips_qsort(words, words + i - 1, num);
+	// mips_qsort(words, words + i - 1, num);
+	c_qsort(words, words + i - 1, num);
 	print_result(words, i, output_file);
 
-	// Free
 	for (;i>=0;i--)
 			free(words[i]);
 	free(words);
@@ -99,7 +94,7 @@ void parse_file_sort_and_print(FILE *input_file, FILE *output_file, int num) {
 
 int main (int argc, char *argv[]) {
 	bool help, version, output, input, numeric;
-	help = version = output = input = false;
+	help = version = output = input = numeric = false;
 
 	FILE *output_file, *input_file;
 	output_file = input_file = NULL;
@@ -138,9 +133,6 @@ int main (int argc, char *argv[]) {
 				break;
 		}
 	}
-
-	// Esto est'a dado vuelta porque soy medio boludo
-	numeric = true;
 
 	if (help) {
 		show_help();

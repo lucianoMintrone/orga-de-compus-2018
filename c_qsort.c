@@ -3,7 +3,7 @@
 #include <string.h>
 
 int minus(char *a, char *b, int num) {
-  if (num == 0) {
+  if (num != 0) {
     return atoi(a) - atoi(b);
   } else {
     return strcmp(a, b);
